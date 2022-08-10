@@ -10,13 +10,8 @@ for string in lines:
 with open('location.txt', 'r') as f:
     locations = f.readlines()
 
-test = 0
 finallocation = []
 
 for string in locations:
     string = string.replace('\n', '')
     finallocation.append(string)
-    test+=1
-
-print(finallocation)
-print(test)
