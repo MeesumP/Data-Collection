@@ -1,3 +1,4 @@
+from operator import truediv
 from bs4 import BeautifulSoup
 import requests
 
@@ -23,6 +24,16 @@ def is_downloadable(url):
 
 
 def collect_hospitals():
+    def if_button(string):
+        keywords = ['standard', 'charges', 'download', 'charge']
+        numin = 0
+        for stri in keywords:
+            if stri in string.lower():
+                numin +=1
+        if numin >= 2:
+            return True
+        else:
+            return False
     for url in hospitals:
             
         location = url[2]
@@ -39,7 +50,7 @@ def collect_hospitals():
             occurences.append(str(link.get('href')))
 
         for string in occurences:
-            if "standard" in string.lower():
+            if if_button(string.lower()):
                 exacturl = domain + string
 
         if is_downloadable(exacturl):
@@ -53,3 +64,5 @@ def collect_insurers():
 
 def find_price(CPTCode, hospital):
     pass
+
+collect_hospitals()
