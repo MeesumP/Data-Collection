@@ -1,9 +1,15 @@
+from os import remove
 from bs4 import BeautifulSoup
 import requests
+import validators
 
-hospitals = [
-    ["A.O. Fox Memorial Hospital", "1 Norton Ave, Oneonta, NY 13820", "https://www.bassett.org/locations/ao-fox-hospital/ao-fox-patients-visitors/ao-fox-hospital-pricing"]
-]
+def remove_newline(list):
+    new_list = [x[:-1] for x in list]
+    new_list[-1] = list[-1]
+    return new_list
+
+with open('finalhospitals.txt', 'r') as f:
+    hospitals = f.readlines()
 
 IPs = [
     ["A.O. Fox Memorial Hospital", "1 Norton Ave, Oneonta, NY 13820", "https://www.bassett.org/locations/ao-fox-hospital/ao-fox-patients-visitors/ao-fox-hospital-pricing"]
@@ -35,65 +41,34 @@ def collect_hospitals():
         else:
             return False
     for url in hospitals:
-            
-        location = url[2]
-        firstvar = location.split('/')
+        if validators.url(url[2]):
+            location = url[2]
+            firstvar = location.split('/')
 
-        domain = "https://" + firstvar[2]
+            domain = "https://" + firstvar[2]
 
-        result = requests.get(location)
-        soup = BeautifulSoup(result.text, "html.parser")
+            result = requests.get(location)
+            soup = BeautifulSoup(result.text, "html.parser")
 
-        occurences = []
+            occurences = []
 
-        for link in soup.find_all('a'):
-            occurences.append(str(link.get('href')))
+            for link in soup.find_all('a'):
+                occurences.append(str(link.get('href')))
 
-        for string in occurences:
-            if if_button(string.lower()):
-                exacturl = domain + string
+            for string in occurences:
+                if if_button(string.lower()):
+                    exacturl = domain + string
 
-        if is_downloadable(exacturl):
-            r = requests.get(exacturl, allow_redirects=True)
-            open(str(url[0]) + '.xlsx', 'wb').write(r.content)
+            if is_downloadable(exacturl):
+                r = requests.get(exacturl, allow_redirects=True)
+                open(str(url[0]) + '.xlsx', 'wb').write(r.content)
+            else:
+                return url[0] + " not downloadable"
         else:
-            return url[0] + " not downloadable"
+            continue
 
 def collect_insurers():
-    def if_button(string):
-        keywords = 'TBD'
-        numin = 0
-        for stri in keywords:
-            if stri in string.lower():
-                numin +=1
-        if numin >= 2:
-            return True
-        else:
-            return False
-    for url in IPs:
-            
-        location = url[2]
-        firstvar = location.split('/')
-
-        domain = "https://" + firstvar[2]
-
-        result = requests.get(location)
-        soup = BeautifulSoup(result.text, "html.parser")
-
-        occurences = []
-
-        for link in soup.find_all('a'):
-            occurences.append(str(link.get('href')))
-
-        for string in occurences:
-            if if_button(string.lower()):
-                exacturl = domain + string
-
-        if is_downloadable(exacturl):
-            r = requests.get(exacturl, allow_redirects=True)
-            open(str(url[0]) + '.xlsx', 'wb').write(r.content)
-        else:
-            return url[0] + " not downloadable"
+    pass
 
 
 def find_price(CPTCode, hospital):
