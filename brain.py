@@ -1,19 +1,17 @@
-from os import remove
 from bs4 import BeautifulSoup
 import requests
 import validators
+import pandas as pd
+import finalhospitals
 
 def remove_newline(list):
     new_list = [x[:-1] for x in list]
     new_list[-1] = list[-1]
     return new_list
 
-with open('finalhospitals.txt', 'r') as f:
-    hospitals = f.readlines()
+hospitals = finalhospitals.hospitals
 
-IPs = [
-    ["A.O. Fox Memorial Hospital", "1 Norton Ave, Oneonta, NY 13820", "https://www.bassett.org/locations/ao-fox-hospital/ao-fox-patients-visitors/ao-fox-hospital-pricing"]
-]
+IPs = []
 
 def interpretNLE(nl):
     pass
@@ -71,5 +69,8 @@ def collect_insurers():
     pass
 
 
-def find_price(CPTCode, hospital):
-    pass
+def find_price(CPTcode, hospital):
+    df = pd.read_excel(hospital + '.xlsx')  
+    print(df.head())
+
+print(hospitals[1][1])
