@@ -2,14 +2,12 @@ from bs4 import BeautifulSoup
 import requests
 import validators
 import pandas as pd
-import finalhospitals
+from finalhospitals import hospitals
 
 def remove_newline(list):
     new_list = [x[:-1] for x in list]
     new_list[-1] = list[-1]
     return new_list
-
-hospitals = finalhospitals.hospitals
 
 IPs = []
 
@@ -72,5 +70,3 @@ def collect_insurers():
 def find_price(CPTcode, hospital):
     df = pd.read_excel(hospital + '.xlsx')  
     print(df.head())
-
-print(hospitals[1][1])
